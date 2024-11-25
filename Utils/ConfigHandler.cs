@@ -5,7 +5,8 @@ namespace DDSS_HideEmailNotifications.Utils
     internal static class ConfigHandler
     {
         private static MelonPreferences_Category _prefs_Category;
-        internal static MelonPreferences_Entry<bool> _prefs_Enabled;
+        internal static MelonPreferences_Entry<bool> _prefs_HidePlayerEmails;
+        internal static MelonPreferences_Entry<bool> _prefs_HideGameEmails;
 
         internal static void Setup()
         {
@@ -13,7 +14,8 @@ namespace DDSS_HideEmailNotifications.Utils
             _prefs_Category = MelonPreferences.CreateCategory("HideEmailNotifications", "Hide Email Notifications");
 
             // Create Preferences Entries
-            _prefs_Enabled = CreatePref("Enabled", "Enabled", "Toggles hiding of Email HUD Notifications", true);
+            _prefs_HidePlayerEmails = CreatePref("HidePlayerEmails", "Hide Player Emails", "Toggles hiding of HUD Notifications for Player Emails", true);
+            _prefs_HideGameEmails = CreatePref("HideGameEmails", "Hide Game Emails", "Toggles hiding of HUD Notifications for Client Emails", true);
         }
 
         private static MelonPreferences_Entry<T> CreatePref<T>(

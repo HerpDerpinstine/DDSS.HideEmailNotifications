@@ -3,12 +3,18 @@ using MelonLoader;
 using System;
 using System.Reflection;
 using DDSS_HideEmailNotifications.Utils;
+using System.Collections.Generic;
+using UnityEngine;
+using Il2Cpp;
 
 namespace DDSS_HideEmailNotifications
 {
     internal class MelonMain : MelonMod
     {
         internal static MelonLogger.Instance _logger;
+
+        internal static Dictionary<string, Color> _clientAddresses = new();
+        internal static Dictionary<string, Color> _playerAddresses = new();
 
         public override void OnInitializeMelon()
         {
@@ -24,6 +30,16 @@ namespace DDSS_HideEmailNotifications
 
             // Log Success
             _logger.Msg("Initialized!");
+        }
+
+        public override void OnSceneWasInitialized(int buildIndex, string sceneName)
+        {
+            if ((sceneName != "MainMenuScene")
+                && (sceneName != "LobbyScene"))
+                return;
+
+            _clientAddresses.Clear();
+            _playerAddresses.Clear();
         }
 
         private void ApplyPatches()
