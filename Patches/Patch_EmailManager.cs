@@ -52,36 +52,39 @@ namespace DDSS_HideEmailNotifications.Patches
             if (!ServerController.connectionsEnabled)
                 return false;
 
-            // Validate LocalPlayer
-            LobbyPlayer localPlayer = LobbyManager.instance.GetLocalPlayer();
-            if ((localPlayer == null)
-                || localPlayer.WasCollected)
-                return false;
-
-            // Validate Workstation
-            WorkStationController workstation = localPlayer.NetworkworkStationController;
-            if ((workstation == null)
-                || workstation.WasCollected)
-                return false;
-
             // Validate Recipient
-            string emailAddress = workstation.computerController.emailAddress;
-            if (__1.ToLower() != emailAddress.ToLower())
-                return false;
-
-            // Validate Sender
-            bool isPlayer = MelonMain._playerAddresses.ContainsKey(__0);
-            bool isClient = MelonMain._clientAddresses.ContainsKey(__0);
+            bool isPlayer = MelonMain._playerAddresses.ContainsKey(__1);
+            bool isClient = MelonMain._clientAddresses.ContainsKey(__1);
             if (!isPlayer && !isClient)
                 return false;
 
-            // Show Notification
-            if ((isPlayer && !ConfigHandler._prefs_HidePlayerEmails.Value)
-                || (isClient && !ConfigHandler._prefs_HideGameEmails.Value))
-                UIManager.instance.ShowNotification(
-                    LocalizationManager.instance.GetLocalizedValue("New Email"),
-                    LocalizationManager.instance.GetLocalizedValue("You have received a new email from [player]! View it on your computer", [__0]), 
-                    4f);
+            // Validate Sender
+            isPlayer = MelonMain._playerAddresses.ContainsKey(__0);
+            isClient = MelonMain._clientAddresses.ContainsKey(__0);
+            if (!isPlayer && !isClient)
+                return false;
+
+            // Validate LocalPlayer
+            LobbyPlayer localPlayer = LobbyManager.instance.GetLocalPlayer();
+            if ((localPlayer != null)
+                && !localPlayer.WasCollected)
+            {
+                // Validate Workstation
+                WorkStationController workstation = localPlayer.NetworkworkStationController;
+                if ((workstation != null)
+                    && !workstation.WasCollected)
+                {
+                    // Validate Recipient
+                    string emailAddress = workstation.computerController.emailAddress;
+                    if ((__1 == emailAddress)
+                        && ((isPlayer && !ConfigHandler._prefs_HidePlayerEmails.Value)
+                            || (isClient && !ConfigHandler._prefs_HideGameEmails.Value)))
+                        UIManager.instance.ShowNotification(
+                            LocalizationManager.instance.GetLocalizedValue("New Email"),
+                            LocalizationManager.instance.GetLocalizedValue("You have received a new email from [player]! View it on your computer", [__0]),
+                            4f);
+                }
+            }
 
             // Add Email to Inbox
             if (!__instance.inbox.ContainsKey(__1))
