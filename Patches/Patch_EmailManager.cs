@@ -18,6 +18,7 @@ namespace DDSS_HideEmailNotifications.Patches
         private static void RegisterEmail_Prefix(string __0, Color __1)
         {
             // Add Player Email to Cache
+            __0 = __0.ToLower();
             MelonMain._playerAddresses[__0] = __1;
         }
 
@@ -26,6 +27,7 @@ namespace DDSS_HideEmailNotifications.Patches
         private static void AddEmailContact_Prefix(string __0, Color __1)
         {
             // Add Client Email to Cache
+            __0 = __0.ToLower();
             MelonMain._clientAddresses[__0] = __1;
         }
         
@@ -34,6 +36,7 @@ namespace DDSS_HideEmailNotifications.Patches
         private static void RemoveEmailContact_Prefix(string __0)
         {
             // Remove Client Address from Cache
+            __0 = __0.ToLower();
             if (MelonMain._clientAddresses.ContainsKey(__0))
                 MelonMain._clientAddresses.Remove(__0);
         }
@@ -53,14 +56,14 @@ namespace DDSS_HideEmailNotifications.Patches
                 return false;
 
             // Validate Recipient
-            bool isPlayer = MelonMain._playerAddresses.ContainsKey(__1);
-            bool isClient = MelonMain._clientAddresses.ContainsKey(__1);
+            bool isPlayer = MelonMain._playerAddresses.ContainsKey(__1.ToLower());
+            bool isClient = MelonMain._clientAddresses.ContainsKey(__1.ToLower());
             if (!isPlayer && !isClient)
                 return false;
 
             // Validate Sender
-            isPlayer = MelonMain._playerAddresses.ContainsKey(__0);
-            isClient = MelonMain._clientAddresses.ContainsKey(__0);
+            isPlayer = MelonMain._playerAddresses.ContainsKey(__0.ToLower());
+            isClient = MelonMain._clientAddresses.ContainsKey(__0.ToLower());
             if (!isPlayer && !isClient)
                 return false;
 
@@ -75,8 +78,8 @@ namespace DDSS_HideEmailNotifications.Patches
                     && !workstation.WasCollected)
                 {
                     // Validate Recipient
-                    string emailAddress = workstation.computerController.emailAddress;
-                    if ((__1 == emailAddress)
+                    string emailAddress = workstation.computerController.emailAddress.ToLower();
+                    if ((__1.ToLower() == emailAddress.ToLower())
                         && ((isPlayer && !ConfigHandler._prefs_HidePlayerEmails.Value)
                             || (isClient && !ConfigHandler._prefs_HideGameEmails.Value)))
                         UIManager.instance.ShowNotification(
