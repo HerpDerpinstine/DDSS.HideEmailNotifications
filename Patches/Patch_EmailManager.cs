@@ -19,26 +19,7 @@ namespace DDSS_HideEmailNotifications.Patches
         {
             // Add Player Email to Cache
             __0 = __0.ToLower();
-            MelonMain._playerAddresses[__0] = __1;
-        }
-
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(EmailManager), nameof(EmailManager.AddEmailContact))]
-        private static void AddEmailContact_Prefix(string __0, Color __1)
-        {
-            // Add Client Email to Cache
-            __0 = __0.ToLower();
-            MelonMain._clientAddresses[__0] = __1;
-        }
-        
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(EmailManager), nameof(EmailManager.RemoveEmailContact))]
-        private static void RemoveEmailContact_Prefix(string __0)
-        {
-            // Remove Client Address from Cache
-            __0 = __0.ToLower();
-            if (MelonMain._clientAddresses.ContainsKey(__0))
-                MelonMain._clientAddresses.Remove(__0);
+            MelonMain._playerAddresses[__0.ToLower()] = __1;
         }
 
         [HarmonyPrefix]
@@ -56,14 +37,16 @@ namespace DDSS_HideEmailNotifications.Patches
                 return false;
 
             // Validate Recipient
-            bool isPlayer = MelonMain._playerAddresses.ContainsKey(__1.ToLower());
-            bool isClient = MelonMain._clientAddresses.ContainsKey(__1.ToLower());
+            string recipientLower = __1.ToLower();
+            bool isPlayer = MelonMain._playerAddresses.ContainsKey(recipientLower);
+            bool isClient = Task.clientEmails.Contains(recipientLower);
             if (!isPlayer && !isClient)
                 return false;
 
             // Validate Sender
-            isPlayer = MelonMain._playerAddresses.ContainsKey(__0.ToLower());
-            isClient = MelonMain._clientAddresses.ContainsKey(__0.ToLower());
+            string senderLower = __0.ToLower();
+            isPlayer = MelonMain._playerAddresses.ContainsKey(senderLower);
+            isClient = Task.clientEmails.Contains(senderLower);
             if (!isPlayer && !isClient)
                 return false;
 
